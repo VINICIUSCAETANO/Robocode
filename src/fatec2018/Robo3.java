@@ -3,6 +3,13 @@ package fatec2018;
 import robocode.*;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 
+/**
+ * Classe que implementa um Robot e possui movimentos e comportamentos
+ * inspirados no personagem Homem de Ferro da Marvel.
+ * 
+ * @author Vinícius Caetano
+ */
+
 public class Robo3 extends TeamRobot {
 
     //constante que representa a largura do campo de batalha em pixels
@@ -14,7 +21,6 @@ public class Robo3 extends TeamRobot {
 
     @Override
     public void run() {
-
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
@@ -62,8 +68,14 @@ public class Robo3 extends TeamRobot {
         fire(3);
         setAdjustGunForRobotTurn(false);
     }
+    
+    /**
+     * Faz o robo se movimentar em dois losangos como um 8.
+     * @param passo tamanho de cada passo, que corresponde a uma aresta
+     * dos losangos
+     */
 
-    private void movimentaEmOito(double passo) {
+    public void movimentaEmOito(double passo) {
         ahead(passo);
         turnRight(90);
         ahead(passo);
@@ -80,7 +92,11 @@ public class Robo3 extends TeamRobot {
         ahead(passo);
     }
 
-    private void vaiParaMeio() {
+    /**
+     * Movimenta o Robo para o meio do campo de batalha.
+     */
+    
+    public void vaiParaMeio() {
         if (getX() > LARGURA / 2) {
             turnRight(normalRelativeAngleDegrees(270 - getHeading()));
             ahead(getX() - (LARGURA / 2));
