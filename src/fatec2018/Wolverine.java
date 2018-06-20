@@ -1,5 +1,6 @@
 package fatec2018;
 
+import java.awt.Color;
 import robocode.*;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 
@@ -10,7 +11,7 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
  * @author Vinícius Caetano
  */
 
-public class Robo3 extends TeamRobot {
+public class Wolverine extends TeamRobot {
 
     //constante que representa a largura do campo de batalha em pixels
     private final double LARGURA = 1000;
@@ -21,13 +22,19 @@ public class Robo3 extends TeamRobot {
 
     @Override
     public void run() {
+        //Cores - chassi: branco, arma: cinza-escuro, radar: branco
+        setColors(Color.white, Color.darkGray, Color.white);
+        //Cor do tiro: rosa
+        setBulletColor(Color.pink);
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
+        setAdjustGunForRobotTurn(true);
         turnRight(45);
-
+        
         while (true) {
             //movimenta o robo em um oito em que as metades são dois losangos
+            setTurnGunRight(10000);
             movimentaEmOito(tamPasso);
         }
     }
@@ -36,37 +43,47 @@ public class Robo3 extends TeamRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
         out.println(e.getName());
         //se é um robo amigo nao se faz nada e retorna a função
-        //não testei ainda esssa parte
         if (isTeammate(e.getName())) {
+            scan();
             return;
         }
-        //se a distancia até o inimigo é menor que 50 atira forte
-        if (e.getDistance() < 50) {
+        //se é o robo BorderGuard também não faz nada
+        if(e.getName().equals("samplesentry.BorderGuard")) {
+            scan();
+            return;
+        }
+  
+        //se a energia do nosso robo é maior que 20 atira forte
+        if (getEnergy() > 20) {
             fire(3);
-        } //podemos colocar mais condições baseadas em mais distancias
-        else if (e.getDistance() >= 50 && e.getDistance() < 200){
+        } 
+        //se a energia do nosso robo é menor que 20 e maior
+        //que 10 atira com força média
+        else if (getEnergy() <= 20 && getEnergy() > 10) {
             fire(2);
         }
+        //se está com energia menor que 10 atira bem fraco para
+        //não gastar energia
         else {
-            fire(1);
+            fire(0.1);
         }
+        
     }
 
     @Override
     public void onHitWall(HitWallEvent e) {
-        //temos que definir uma estratégia para quando ele bater em um muro
-        //por enquanto podemos só recuar um pouco
-        back(100);
+        //se bater em uma parede é porque está muito longe da rota predeterminada
+        //então volta para o meio do campo de batalha
+        vaiParaMeio();
     }
     
     @Override
     public void onHitRobot(HitRobotEvent e) {
-        //se ele antinge outro robô viramos o canhao para ele e atiramos forte
-        setAdjustGunForRobotTurn(true);
-        turnGunRight(normalRelativeAngleDegrees(e.getBearing() + 
-                getHeading() - getGunHeading()));
-        fire(3);
-        setAdjustGunForRobotTurn(false);
+        //atingindo outro robo se recua um pouco
+        if(e.isMyFault()) {
+        back(20);
+        }
+        scan();
     }
     
     /**
