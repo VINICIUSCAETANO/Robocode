@@ -11,7 +11,9 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
  * @author Vinícius Caetano
  */
 
+
 public class Wolverine extends TeamRobot {
+
 
     //constante que representa a largura do campo de batalha em pixels
     private final double LARGURA = 1000;
