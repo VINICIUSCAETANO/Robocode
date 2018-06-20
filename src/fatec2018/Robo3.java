@@ -11,7 +11,7 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
  */
 
 public class Robo3 extends TeamRobot {
-
+// teste dos commits
     //constante que representa a largura do campo de batalha em pixels
     private final double LARGURA = 1000;
     //constante que representa a altura do campo de batalha em pixels
