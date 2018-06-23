@@ -2,18 +2,17 @@ package fatec2018;
 
 import java.awt.Color;
 import robocode.*;
-import static robocode.util.Utils.normalRelativeAngleDegrees;
+import static robocode.util.Utils.*;
 
 /**
  * Classe que implementa um Robot e possui movimentos e comportamentos
- * inspirados no personagem Homem de Ferro da Marvel.
+ * inspirados no personagem Wolverine da Marvel.
  * 
  * @author Vinícius Caetano
  */
 
 
 public class Wolverine extends TeamRobot {
-
 
     //constante que representa a largura do campo de batalha em pixels
     private final double LARGURA = 1000;
@@ -31,12 +30,15 @@ public class Wolverine extends TeamRobot {
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
-        setAdjustGunForRobotTurn(true);
         turnRight(45);
+        //permite ao canhao girar independentemente do chassi
+        setAdjustGunForRobotTurn(true);
         
         while (true) {
+            //gira o canhao indefinidamente para a direita em um método que
+            //não bloqueia o resto do movimento do robô
+            setTurnGunRight(Double.POSITIVE_INFINITY);
             //movimenta o robo em um oito em que as metades são dois losangos
-            setTurnGunRight(10000);
             movimentaEmOito(tamPasso);
         }
     }
@@ -77,6 +79,8 @@ public class Wolverine extends TeamRobot {
         //se bater em uma parede é porque está muito longe da rota predeterminada
         //então volta para o meio do campo de batalha
         vaiParaMeio();
+        turnRight(normalAbsoluteAngleDegrees(45 - getHeading()));
+        movimentaEmOito(tamPasso);
     }
     
     @Override
@@ -86,6 +90,11 @@ public class Wolverine extends TeamRobot {
         back(20);
         }
         scan();
+    }
+
+    @Override
+    public void onWin(WinEvent event) {
+        //faz alguma dancinha
     }
     
     /**
