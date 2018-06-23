@@ -19,7 +19,7 @@ public class Wolverine extends TeamRobot {
     //constante que representa a altura do campo de batalha em pixels
     private final double ALTURA = 1000;
     //tamanho de cada parte do 8
-    private double tamPasso = 200;
+    private final double tamPasso = 200;
 
     @Override
     public void run() {
@@ -125,6 +125,7 @@ public class Wolverine extends TeamRobot {
      */
     
     public void vaiParaMeio() {
+        //o robo comecou do lado direito do campo de batalha
         if (getX() > LARGURA / 2) {
             turnRight(normalRelativeAngleDegrees(270 - getHeading()));
             ahead(getX() - (LARGURA / 2));
