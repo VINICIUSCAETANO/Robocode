@@ -1,32 +1,42 @@
 package fatec2018;
 
+import java.awt.Color;
 import robocode.*;
-import static robocode.util.Utils.normalRelativeAngleDegrees;
+import static robocode.util.Utils.*;
 
 /**
  * Classe que implementa um Robot e possui movimentos e comportamentos
- * inspirados no personagem Homem de Ferro da Marvel.
- * 
+ * inspirados no personagem Wolverine da Marvel.
+ *
  * @author Vinícius Caetano
  */
 
-public class Robo3 extends TeamRobot {
+public class Wolverine extends TeamRobot {
 
     //constante que representa a largura do campo de batalha em pixels
     private final double LARGURA = 1000;
     //constante que representa a altura do campo de batalha em pixels
     private final double ALTURA = 1000;
     //tamanho de cada parte do 8
-    private double tamPasso = 200;
+    private final double tamPasso = 200;
 
     @Override
     public void run() {
+        //Cores - chassi: branco, arma: cinza-escuro, radar: branco
+        setColors(Color.white, Color.darkGray, Color.white);
+        //Cor do tiro: rosa
+        setBulletColor(Color.pink);
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
         turnRight(45);
+        //permite ao canhao girar independentemente do chassi
+        setAdjustGunForRobotTurn(true);
 
         while (true) {
+            //gira o canhao indefinidamente para a direita em um método que
+            //não bloqueia o resto do movimento do robô
+            setTurnGunRight(Double.POSITIVE_INFINITY);
             //movimenta o robo em um oito em que as metades são dois losangos
             movimentaEmOito(tamPasso);
         }
@@ -36,45 +46,65 @@ public class Robo3 extends TeamRobot {
     public void onScannedRobot(ScannedRobotEvent e) {
         out.println(e.getName());
         //se é um robo amigo nao se faz nada e retorna a função
-        //não testei ainda esssa parte
         if (isTeammate(e.getName())) {
+            scan();
             return;
         }
-        //se a distancia até o inimigo é menor que 50 atira forte
-        if (e.getDistance() < 50) {
-            fire(3);
-        } //podemos colocar mais condições baseadas em mais distancias
-        else if (e.getDistance() >= 50 && e.getDistance() < 200){
-            fire(2);
+        //se é o robo BorderGuard também não faz nada
+        if (e.getName().equals("samplesentry.BorderGuard")) {
+            scan();
+            return;
         }
-        else {
+
+        if (getOthers() == 1) {
             fire(1);
+            return;
         }
+
+        //se a energia do nosso robo é maior que 20 atira forte
+        if (getEnergy() > 20) {
+            fire(3);
+        } //se a energia do nosso robo é menor que 20 e maior
+        //que 10 atira com força média
+        else if (getEnergy() <= 20 && getEnergy() > 10) {
+            fire(2);
+        } //se está com energia menor que 10 atira bem fraco para
+        //não gastar energia
+        else {
+            fire(0.1);
+        }
+
     }
 
     @Override
     public void onHitWall(HitWallEvent e) {
-        //temos que definir uma estratégia para quando ele bater em um muro
-        //por enquanto podemos só recuar um pouco
-        back(100);
+        //se bater em uma parede é porque está muito longe da rota predeterminada
+        //então volta para o meio do campo de batalha
+        vaiParaMeio();
+        turnRight(normalAbsoluteAngleDegrees(45 - getHeading()));
+        movimentaEmOito(tamPasso);
     }
-    
+
     @Override
     public void onHitRobot(HitRobotEvent e) {
-        //se ele antinge outro robô viramos o canhao para ele e atiramos forte
-        setAdjustGunForRobotTurn(true);
-        turnGunRight(normalRelativeAngleDegrees(e.getBearing() + 
-                getHeading() - getGunHeading()));
-        fire(3);
-        setAdjustGunForRobotTurn(false);
+        //atingindo outro robo se recua um pouco
+        if (e.isMyFault()) {
+            back(20);
+        }
+        scan();
     }
-    
+
+    @Override
+    public void onWin(WinEvent event) {
+        //faz alguma dancinha
+    }
+
     /**
      * Faz o robo se movimentar em dois losangos como um 8.
-     * @param passo tamanho de cada passo, que corresponde a uma aresta
-     * dos losangos
+     *
+     * @param passo tamanho de cada passo, que corresponde a uma aresta dos
+     * losangos
      */
-
     public void movimentaEmOito(double passo) {
         ahead(passo);
         turnRight(90);
@@ -95,8 +125,8 @@ public class Robo3 extends TeamRobot {
     /**
      * Movimenta o Robo para o meio do campo de batalha.
      */
-    
     public void vaiParaMeio() {
+        //o robo comecou do lado direito do campo de batalha
         if (getX() > LARGURA / 2) {
             turnRight(normalRelativeAngleDegrees(270 - getHeading()));
             ahead(getX() - (LARGURA / 2));
