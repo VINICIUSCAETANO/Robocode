@@ -1,8 +1,8 @@
-
 package fatec2018;
 
+import java.awt.Color;
 import robocode.*;
-import robocode.util.Utils;
+import static robocode.util.Utils.*;
 
 /**
  *Classe que implementa um Robot e possui movimentos e comportamentos
@@ -22,6 +22,10 @@ public class GaviaoArqueiro extends TeamRobot {
     boolean set = false;
 
     public void run() {
+        //Cores - chassi: branco, arma: cinza-escuro, radar: branco
+        setColors(Color.white, Color.darkGray, Color.white);
+        //Cor do tiro: rosa
+        setBulletColor(Color.pink);
 
         while (true) {
             //vai para o ponto x=800, y=200
@@ -32,11 +36,11 @@ public class GaviaoArqueiro extends TeamRobot {
             //se chegou no ponto
             if (Math.abs(getX() - 800) < 0.5 && Math.abs(getY() - 200) < 0.5 && caminhada) {
                 //vira o robo de maneira perpendicular ao eixo Y
-                turnRight(Utils.normalRelativeAngleDegrees(90 - getHeading()));
+                turnRight(normalRelativeAngleDegrees(90 - getHeading()));
                 //permite a rotação da arma independentemente do chassi
                 setAdjustGunForRobotTurn(true);
                 //ajusta o canhão para apontar para cima
-                turnGunLeft(Utils.normalAbsoluteAngleDegrees(180 - getGunHeading()));
+                turnGunLeft(normalAbsoluteAngleDegrees(180 - getGunHeading()));
                 //modifica as flags de controle
                 caminhada = false;
                 set = true;
@@ -59,7 +63,7 @@ public class GaviaoArqueiro extends TeamRobot {
         //se ele chegou no ponto do inicio do loop e encontrou um inimigo
         if (set && !isTeammate(e.getName())) {
             //gira o canhåo em direcao a esse nimigo e tranca nele
-            setTurnGunRight(Utils.normalRelativeAngleDegrees(getHeading() - getGunHeading() + e.getBearing()));
+            setTurnGunRight(normalRelativeAngleDegrees(getHeading() - getGunHeading() + e.getBearing()));
         }
         //se é um robô do mesmo tiro não atira
         if (isTeammate(e.getName())) {
@@ -100,7 +104,7 @@ public class GaviaoArqueiro extends TeamRobot {
         double angleToTarget = Math.atan2(x, y);
 
         /* Calculate the turn required get there */
-        double targetAngle = Utils.normalRelativeAngle(angleToTarget - getHeadingRadians());
+        double targetAngle = normalRelativeAngle(angleToTarget - getHeadingRadians());
 
         /* 
 	 * The Java Hypot method is a quick way of getting the length
