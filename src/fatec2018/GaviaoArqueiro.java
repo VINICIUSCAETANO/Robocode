@@ -85,7 +85,7 @@ public class GaviaoArqueiro extends TeamRobot {
     @Override
     public void onHitWall(HitWallEvent e) {
         //batendo na parede se torna mais conservador em relacao aos movimentos
-        frente += 50;
+        frente -= 50;
     }
 
     @Override
