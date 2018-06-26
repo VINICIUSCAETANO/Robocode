@@ -55,25 +55,25 @@ public class Wolverine extends TeamRobot {
             scan();
             return;
         }
+        
+        if(e.getEnergy() <= 1) {
+            fire(1);
+        }
 
         if (getOthers() == 1) {
-            fire(1);
+           
             return;
         }
 
         //se a energia do nosso robo é maior que 20 atira forte
-        if (getEnergy() > 20) {
+        if (getEnergy() > 50) {
             fire(3);
         } //se a energia do nosso robo é menor que 20 e maior
         //que 10 atira com força média
-        else if (getEnergy() <= 20 && getEnergy() > 10) {
+        else if (getEnergy() <= 50 && getEnergy() > 10) {
             fire(2);
         } //se está com energia menor que 10 atira bem fraco para
         //não gastar energia
-        else {
-            fire(0.1);
-        }
-
     }
 
     @Override
@@ -88,10 +88,10 @@ public class Wolverine extends TeamRobot {
     @Override
     public void onHitRobot(HitRobotEvent e) {
         //atingindo outro robo se recua um pouco
-        if (e.isMyFault()) {
-            back(20);
+        if(isTeammate(e.getName())) {
+            back(150);
+            return;
         }
-        scan();
     }
 
     @Override
