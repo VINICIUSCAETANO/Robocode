@@ -8,9 +8,8 @@ import static robocode.util.Utils.*;
  * Classe que implementa um Robot e possui movimentos e comportamentos
  * inspirados no personagem Wolverine da Marvel.
  *
- * @author Vinícius Caetano
+ * @author Vinícius
  */
-
 public class Wolverine extends TeamRobot {
 
     //constante que representa a largura do campo de batalha em pixels
@@ -26,6 +25,7 @@ public class Wolverine extends TeamRobot {
         setColors(Color.white, Color.darkGray, Color.white);
         //Cor do tiro: rosa
         setBulletColor(Color.pink);
+        
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
@@ -44,7 +44,9 @@ public class Wolverine extends TeamRobot {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-        out.println(e.getName());
+        if (e.getEnergy() <= 1) {
+            fire(1);
+        }
         //se é um robo amigo nao se faz nada e retorna a função
         if (isTeammate(e.getName())) {
             scan();
@@ -52,27 +54,24 @@ public class Wolverine extends TeamRobot {
         }
         //se é o robo BorderGuard também não faz nada
         if (e.getName().equals("samplesentry.BorderGuard")) {
-            scan();
             return;
         }
-        
-        if(e.getEnergy() <= 1) {
-            fire(1);
-        }
 
-        if (getOthers() == 1) {
-           
+        if (e.getName().equals("sample.Walls")) {
             return;
         }
 
         //se a energia do nosso robo é maior que 20 atira forte
-        if (getEnergy() > 50) {
+        if (getEnergy() > 20) {
             fire(3);
         } //se a energia do nosso robo é menor que 20 e maior
         //que 10 atira com força média
-        else if (getEnergy() <= 50 && getEnergy() > 10) {
+        else if (getEnergy() <= 20 && getEnergy() > 10) {
             fire(2);
         } //se está com energia menor que 10 atira bem fraco para
+        else {
+            fire(0.5);
+        }
         //não gastar energia
     }
 
@@ -88,7 +87,7 @@ public class Wolverine extends TeamRobot {
     @Override
     public void onHitRobot(HitRobotEvent e) {
         //atingindo outro robo se recua um pouco
-        if(isTeammate(e.getName())) {
+        if (isTeammate(e.getName())) {
             back(150);
             return;
         }
