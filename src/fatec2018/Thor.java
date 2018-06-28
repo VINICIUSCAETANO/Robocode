@@ -23,12 +23,7 @@ public class Thor extends TeamRobot {
         setBulletColor(Color.pink);
 
         //comeca indo para a margem esquerda superior
-        turnRight(normalRelativeAngleDegrees(270 - getHeading()));
-        ahead(getX() - margem);
-        turnRight(90);
-        ahead((ALTURA - margem) - getY());
-        turnRight(90);
-        turnGunRight(90);
+        margem();
 
         //chegou na posicao inicial
         turnRight(45);
@@ -60,35 +55,59 @@ public class Thor extends TeamRobot {
             return;
         }
 
-        //se a energia do nosso robo é maior que 20 atira forte
-        if (getEnergy() > 20) {
+        //se a energia do nosso robo é maior que 40 atira forte
+        if (getEnergy() > 40) {
 
             fire(3);
-        } //se a energia do nosso robo é menor que 20 e maior
-        //que 10 atira com força média
-        else if (getEnergy() <= 20 && getEnergy() > 10) {
+        } //se a energia do nosso robo é menor que 40 e maior
+        //que 30 atira com força média
+        else if (getEnergy() <= 40 && getEnergy() > 30) {
             fire(2);
-        } //se está com energia menor que 10 atira bem fraco para
+        } //se está com energia menor que 30 não atira para
         //não gastar energia
         else {
-            //fire(0.1);
+
         }
     }
 
     /**
      * onHitByBullet: What to do when you're hit by a bullet
      */
-    public void onHitByBullet(HitByBulletEvent e) {
-        // Replace the next line with any behavior you would like
-
+    @Override
+    public void onHitWall(HitWallEvent e) {
+        //retorna para a margem esquerda superior
+        margem();
     }
 
     /**
      * onHitWall: What to do when you hit a wall
      */
-    public void onHitWall(HitWallEvent e) {
-        // Replace the next line with any behavior you would like
+    @Override
+    public void onHitRobot(HitRobotEvent e) {
+        //se for do mesmo time volta pra trás
+        if (isTeammate(e.getName())) {
+            back(150);
+        } //se for inimigo atira forte
+        else {
+            setTurnGunRight(normalRelativeAngleDegrees(getHeading() - getGunHeading() + e.getBearing()));
+            fire(3);
+        }
 
+    }
+
+    /**
+     * inicia-se indo a margem esquerda superior
+     */
+    public void margem() {
+        //gira o canhão do Robo infinitamente
+        setTurnGunRight(Double.POSITIVE_INFINITY);
+        //começa a se mover para a posição inicial
+        turnRight(normalRelativeAngleDegrees(270 - getHeading()));
+        ahead(getX() - margem);
+        turnRight(90);
+        ahead((ALTURA - margem) - getY());
+        turnRight(90);
+        turnGunRight(90);
     }
 
     /**
