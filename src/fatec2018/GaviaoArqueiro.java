@@ -30,21 +30,14 @@ public class GaviaoArqueiro extends TeamRobot {
         vaiParaCanto();
         //ajusta para o canhao ficar independente do chassi
         setAdjustGunForRobotTurn(true);
-        turnLeft(60);
+        turnRight(normalAbsoluteAngleDegrees(300 - getHeading()));
 
-        //movimenta o robo em um V invertido, a ponta do V é quando ele está
-        //no centro do campo de batalha
+      
         while (true) {
-            
-            setTurnGunRight(Double.POSITIVE_INFINITY);
-            ahead(frente);
-            turnLeft(60);
-            ahead(400);
 
-            back(frente);
-            turnRight(60);
-            back(400);
-       
+            setTurnGunRight(Double.POSITIVE_INFINITY);
+            movimenta();
+
         }
     }
 
@@ -62,7 +55,7 @@ public class GaviaoArqueiro extends TeamRobot {
         if (e.getName().equals("sample.Walls")) {
             fire(1);
             return;
-        }   
+        }
 
         //gira o canhåo em direcao a esse nimigo e tranca nele
         setTurnGunRight(normalRelativeAngleDegrees(getHeading() - getGunHeading() + e.getBearing()));
@@ -81,26 +74,72 @@ public class GaviaoArqueiro extends TeamRobot {
 
     @Override
     public void onHitWall(HitWallEvent e) {
-        //batendo na parede se torna mais conservador em relacao aos movimentos
-    
+        vaiParaCanto();
+        turnRight(normalAbsoluteAngleDegrees(300 - getHeading()));
     }
 
     @Override
     public void onWin(WinEvent event) {
         //faz uma dancinha
     }
+    
+    /**
+    *Movimenta o robo em um V invertido, a ponta do V é quando ele está
+    *no centro do campo de batalha.
+    */
+    public void movimenta() {
+        ahead(frente);
+        turnLeft(60);
+        ahead(frente);
+        back(frente);
+        turnRight(60);
+        back(frente);
+    }
 
     /**
-     * Movimenta o robo para o canto direito inferior
+     * Movimenta o robo para o canto direito inferior.
      */
     public void vaiParaCanto() {
-        //vai para canto direito
+        //comecou do lado esquerdo
         if (getX() < WIDTH - margem) {
             turnRight(normalRelativeAngleDegrees(90 - getHeading()));
             ahead(Math.abs(getX() - (WIDTH - margem)));
+        } //comecou do lado direito da margem
+        else {
+            turnRight(normalRelativeAngleDegrees(270 - getHeading()));
+            ahead(Math.abs(getX() - (WIDTH - margem)));
         }
-        //vai para a parte inferior do campo de batalha
-        turnLeft(90);
-        back(Math.abs(getY() - (0 + margem)));
+        //comecou em cima da margem
+        if (getY() > margem) {
+            turnRight(normalRelativeAngleDegrees(180 - getHeading()));
+            ahead(Math.abs(getY() - (0 + margem)));
+        } //comecou em baixo da margem
+        else {
+            turnRight(normalRelativeAngleDegrees(0 - getHeading()));
+            ahead(Math.abs(getY() - (0 + margem)));
+        }
     }
+
+    /**
+     * Verifica se o robo nao ultrapassou as bordas.
+     *
+     * @return true se esta ultrapassando as bordas e false se dentro
+     */
+    public boolean verificaForaBorda() {
+        boolean foraBordas = false;
+        if (getX() < margem) {
+            return true;
+        }
+        if (getX() > WIDTH - margem) {
+            return true;
+        }
+        if (getY() < margem) {
+            return true;
+        }
+        if (getY() > HEIGHT - margem) {
+            return true;
+        }
+        return foraBordas;
+    }
+
 }

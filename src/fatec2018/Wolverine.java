@@ -81,7 +81,6 @@ public class Wolverine extends TeamRobot {
         //então volta para o meio do campo de batalha
         vaiParaMeio();
         turnRight(normalAbsoluteAngleDegrees(45 - getHeading()));
-        movimentaEmOito(tamPasso);
     }
 
     @Override
