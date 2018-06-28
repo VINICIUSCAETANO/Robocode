@@ -18,7 +18,7 @@ public class GaviaoArqueiro extends TeamRobot {
     //margem das bordas
     private final int margem = 150;
     //dimensao dos movimentos laterais
-    private int frente = 400;
+    private int deslocamento = 400;
 
     public void run() {
         //Cores - chassi: branco, arma: cinza-escuro, radar: branco
@@ -30,20 +30,24 @@ public class GaviaoArqueiro extends TeamRobot {
         vaiParaCanto();
         //ajusta para o canhao ficar independente do chassi
         setAdjustGunForRobotTurn(true);
-        turnLeft(60);
+        turnRight(normalAbsoluteAngleDegrees(300 - getHeading()));
 
         //movimenta o robo em um V invertido, a ponta do V é quando ele está
         //no centro do campo de batalha
         while (true) {
             
             setTurnGunRight(Double.POSITIVE_INFINITY);
-            ahead(frente);
+            ahead(deslocamento);
+            setTurnGunRight(Double.POSITIVE_INFINITY);
             turnLeft(60);
-            ahead(400);
-
-            back(frente);
+            setTurnGunRight(Double.POSITIVE_INFINITY);
+            ahead(deslocamento);
+            setTurnGunRight(Double.POSITIVE_INFINITY);
+            back(deslocamento);
+            setTurnGunRight(Double.POSITIVE_INFINITY);
             turnRight(60);
-            back(400);
+            setTurnGunRight(Double.POSITIVE_INFINITY);
+            back(deslocamento);
        
         }
     }
@@ -74,15 +78,14 @@ public class GaviaoArqueiro extends TeamRobot {
     @Override
     public void onHitRobot(HitRobotEvent e) {
         if (isTeammate(e.getName())) {
-            back(150);
+            ahead(150);
             return;
         }
     }
 
     @Override
     public void onHitWall(HitWallEvent e) {
-        //batendo na parede se torna mais conservador em relacao aos movimentos
-    
+        //deslocamento -= 150;  
     }
 
     @Override
@@ -90,17 +93,28 @@ public class GaviaoArqueiro extends TeamRobot {
         //faz uma dancinha
     }
 
-    /**
-     * Movimenta o robo para o canto direito inferior
+   /**
+     * Movimenta o robo para o canto direito inferior.
      */
     public void vaiParaCanto() {
-        //vai para canto direito
+        //comecou do lado esquerdo
         if (getX() < WIDTH - margem) {
             turnRight(normalRelativeAngleDegrees(90 - getHeading()));
             ahead(Math.abs(getX() - (WIDTH - margem)));
+        } //comecou do lado direito da margem
+        else {
+            turnRight(normalRelativeAngleDegrees(270 - getHeading()));
+            ahead(Math.abs(getX() - (WIDTH - margem)));
         }
-        //vai para a parte inferior do campo de batalha
-        turnLeft(90);
-        back(Math.abs(getY() - (0 + margem)));
+        //comecou em cima da margem
+        if (getY() > margem) {
+            turnRight(normalRelativeAngleDegrees(180 - getHeading()));
+            ahead(Math.abs(getY() - (0 + margem)));
+        } //comecou em baixo da margem
+        else {
+            turnRight(normalRelativeAngleDegrees(0 - getHeading()));
+            ahead(Math.abs(getY() - (0 + margem)));
+        }
     }
+
 }
