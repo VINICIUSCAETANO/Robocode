@@ -26,12 +26,15 @@ public class Wolverine extends TeamRobot {
         //Cor do tiro: rosa
         setBulletColor(Color.pink);
         
+         //permite ao canhao girar independentemente do chassi
+        setAdjustGunForRobotTurn(true);
+        setTurnGunRight(Double.POSITIVE_INFINITY);
+        
         //vai para o meio do campo de batalha e vira a 45 graus em relação ao
         //compo de batalha
         vaiParaMeio();
         turnRight(45);
-        //permite ao canhao girar independentemente do chassi
-        setAdjustGunForRobotTurn(true);
+       
 
         while (true) {
             //gira o canhao indefinidamente para a direita em um método que
@@ -95,7 +98,12 @@ public class Wolverine extends TeamRobot {
 
     @Override
     public void onWin(WinEvent event) {
-        //faz alguma dancinha
+        setBodyColor(Color.green);
+        turnRight(30);
+        ahead(30);
+        turnLeft(30);
+        back(30);
+        setBodyColor(Color.white);
     }
 
     /**
