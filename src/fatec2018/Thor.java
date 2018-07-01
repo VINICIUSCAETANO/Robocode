@@ -95,6 +95,16 @@ public class Thor extends TeamRobot {
 
     }
 
+    @Override
+    public void onWin(WinEvent event) {
+        setBodyColor(Color.green);
+        turnRight(30);
+        ahead(30);
+        turnLeft(30);
+        back(30);
+        setBodyColor(Color.white);
+    }
+    
     /**
      * inicia-se indo a margem esquerda superior
      */
