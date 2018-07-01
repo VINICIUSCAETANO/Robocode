@@ -26,12 +26,16 @@ public class GaviaoArqueiro extends TeamRobot {
         //Cor do tiro: rosa
         setBulletColor(Color.pink);
 
-        //vai para o canto inferior direito
-        vaiParaCanto();
         //ajusta para o canhao ficar independente do chassi
         setAdjustGunForRobotTurn(true);
-        turnRight(normalAbsoluteAngleDegrees(300 - getHeading()));
-
+        setTurnGunRight(Double.POSITIVE_INFINITY);
+        //vai para o canto inferior direito
+        vaiParaCanto(); 
+        //gira o chassi em 60 graus em relacao ao eixo X (360 - 60)
+        turnRight(normalAbsoluteAngleDegrees(300 - getHeading()));     
+        //vai para o canto inferior direito
+        vaiParaCanto();
+  
         //movimenta o robo em um V invertido, a ponta do V é quando ele está
         //no centro do campo de batalha
         while (true) {
@@ -78,19 +82,24 @@ public class GaviaoArqueiro extends TeamRobot {
     @Override
     public void onHitRobot(HitRobotEvent e) {
         if (isTeammate(e.getName())) {
-            ahead(150);
+            //ahead(150);
             return;
+        }
+        else {
+            setTurnGunRight(normalRelativeAngleDegrees(getHeading() - getGunHeading() + e.getBearing()));
+            fire(3);
+            scan();
         }
     }
 
     @Override
-    public void onHitWall(HitWallEvent e) {
-        //deslocamento -= 150;  
-    }
-
-    @Override
     public void onWin(WinEvent event) {
-        //faz uma dancinha
+        setBodyColor(Color.green);
+        turnRight(30);
+        ahead(30);
+        turnLeft(30);
+        back(30);
+        setBodyColor(Color.white);
     }
 
    /**
